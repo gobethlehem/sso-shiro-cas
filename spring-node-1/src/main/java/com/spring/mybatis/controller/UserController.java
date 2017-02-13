@@ -1,6 +1,7 @@
 package com.spring.mybatis.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,5 +26,10 @@ public class UserController {
 		
 		return "../index";
 	}
+	
+//	@RequestMapping("/logout")
+//    public String logout() {
+//        return "redirect:http://127.0.0.1:9090/cas/logout?service=http://127.0.0.1:9090/node1/shiro-cas";
+//    }
 
 }
