@@ -8,11 +8,13 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.cas.CasRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import com.spring.mybatis.model.User;
 import com.spring.mybatis.service.RoleService;
 import com.spring.mybatis.service.UserService;
+
+import io.buji.pac4j.realm.Pac4jRealm;
+import io.buji.pac4j.subject.Pac4jPrincipal;
 
 /**
  * 用户授权信息域
@@ -20,7 +22,7 @@ import com.spring.mybatis.service.UserService;
  * @author coderhuang
  * 
  */
-public class UserRealm extends CasRealm {
+public class UserRealm extends Pac4jRealm {
 	
 	@Resource
 	private RoleService roleService;
@@ -36,7 +38,7 @@ public class UserRealm extends CasRealm {
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 
-		String account = (String) principals.getPrimaryPrincipal();
+		String account = (String) ((Pac4jPrincipal)principals.getPrimaryPrincipal()).getProfiles().get(0).getId();
 		SimpleAuthorizationInfo authorizationInfo = null;
 		if (authorizationInfo == null) {
 			authorizationInfo = new SimpleAuthorizationInfo();
@@ -57,7 +59,7 @@ public class UserRealm extends CasRealm {
 
 		AuthenticationInfo authc = super.doGetAuthenticationInfo(token);
 
-		String account = (String) authc.getPrincipals().getPrimaryPrincipal();
+		String account = (String) ((Pac4jPrincipal)authc.getPrincipals().getPrimaryPrincipal()).getProfiles().get(0).getId();
 
 		User user = userService.getUserByAccount(account);
 		

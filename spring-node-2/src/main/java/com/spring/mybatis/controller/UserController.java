@@ -1,6 +1,9 @@
 package com.spring.mybatis.controller;
 
+import java.io.IOException;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,5 +28,11 @@ public class UserController {
 		
 		return "../index";
 	}
+	
+	@RequestMapping("/secureRequest")
+    public void mainRequest(HttpServletResponse response) throws IOException {
+        response.setContentType("text/plain");
+        response.getWriter().println("Hello from node2");
+    }
 
 }

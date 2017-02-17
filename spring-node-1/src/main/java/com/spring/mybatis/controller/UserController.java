@@ -1,8 +1,16 @@
 package com.spring.mybatis.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -27,9 +35,32 @@ public class UserController {
 		return "../index";
 	}
 	
-//	@RequestMapping("/logout")
-//    public String logout() {
-//        return "redirect:http://127.0.0.1:9090/cas/logout?service=http://127.0.0.1:9090/node1/shiro-cas";
-//    }
+	/*@RequestMapping("/secure/makeRequest")
+    public void makeRequest(HttpServletResponse response) throws IOException {
+        HttpClient client = new HttpClient();
+        String targetUrl = "http://localhost:9090/node2/users/secureRequest.htm";
+        CasAuthenticationToken token = (CasAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        String ticket = token.getAssertion().getPrincipal().getProxyTicketFor(targetUrl);
+        HttpMethod m = new GetMethod(targetUrl+"?ticket=" + ticket);
+        m.setFollowRedirects(false);
+        client.executeMethod(m);
+
+        PrintWriter out = response.getWriter();
+        renderResponse(m, out);
+    }*/
+
+    private void renderResponse(HttpMethod m, PrintWriter out) throws IOException {
+        out.println("Response For: " + m.getPath());
+        out.println("Response Code: " +  m.getStatusCode());
+        out.println("Reason Phrase: " +  m.getStatusLine().getReasonPhrase());
+        out.println("Response Headers:");
+        for(Header h: m.getResponseHeaders()) {
+            out.println("\t" + h.getName() + ":" + h.getValue());
+        }
+        out.println("Body: " +  m.getResponseBodyAsString());
+        out.println();
+        out.println();
+        out.println();
+    }
 
 }
