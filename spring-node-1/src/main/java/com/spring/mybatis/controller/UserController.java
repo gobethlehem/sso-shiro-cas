@@ -43,7 +43,7 @@ public class UserController {
 	@RequestMapping("/callbyproxy")
     public void makeRequest(HttpServletResponse response) throws IOException {
         HttpClient client = new HttpClient();
-        String targetUrl = "http://localhost:9090/node2/users/secureRequest.htm";
+        String targetUrl = "http://localhost:9090/node2/users/secureRequest";
         PrincipalCollection principals = SecurityUtils.getSubject().getPrincipals(); 
         Pac4jPrincipal principal =  principals.byType(Pac4jPrincipal.class).iterator().next(); 
         CasProxyProfile profile = (CasProxyProfile)principal.getProfile();

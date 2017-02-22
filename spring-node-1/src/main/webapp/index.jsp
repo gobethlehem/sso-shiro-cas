@@ -15,9 +15,11 @@
 		<h2>查询</h2>
 	</shiro:hasPermission>
 	
-	<a href="http://127.0.0.1:9090/node1/shiro-cas">节点1</a>
+	<a href="http://127.0.0.1:9090/node1/">节点1</a>
 	
-	<a href="http://127.0.0.1:9090/node2/shiro-cas">节点2</a>
+	<a href="http://127.0.0.1:9090/node1/users/callbyproxy">发送Proxy请求</a>
+	
+	<a href="http://127.0.0.1:9090/node2/">节点2</a>
 	
 	<a href="http://127.0.0.1:9090/node1/logout">单点登出</a>
 </body>

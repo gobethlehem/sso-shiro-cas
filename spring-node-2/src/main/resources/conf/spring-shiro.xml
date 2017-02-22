@@ -15,41 +15,89 @@
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
 		<!-- 设定用户的登录链接，这里为cas登录页面的链接地址可配置回调地址 -->
-		<property name="loginUrl" value="${shiro.loginUrl}" />
+		<property name="loginUrl" value="${shiro.loginUrl}?service=${shiro.cas.service}" />
+		<property name="successUrl" value="${shiro.successUrl}" />
 		<property name="filters">
 			<map>
 				<!-- 添加casFilter到shiroFilter -->
-				<entry key="casFilter" value-ref="casFilter" />
+				<!-- <entry key="casFilter" value-ref="casFilter" /> -->
+				<entry key="casCallbackFilter" value-ref="casCallbackFilter" />
 				<entry key="logoutFilter" value-ref="logoutFilter" />
+				<entry key="userFilter" value-ref="userFilter" />
 			</map>
 		</property>
 		<property name="filterChainDefinitions">
 			<value>
-				/shiro-cas = casFilter
+				<!-- /home = casFilter -->
+				/shiro-cas = casCallbackFilter
+				/proxyreceptor = casCallbackFilter
 				/logout = logoutFilter
-				/users/** = user
+				/** = userFilter
 			</value>
 		</property>
 	</bean>
 
-	<bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
-		<!-- 配置验证错误时的失败页面 -->
+	<!-- <bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
+		配置验证错误时的失败页面
 		<property name="failureUrl" value="${shiro.failureUrl}" />
 		<property name="successUrl" value="${shiro.successUrl}" />
+	</bean> -->
+	
+	<!-- <bean name="casFilter" class="io.buji.pac4j.filter.SecurityFilter">
+		<property name="config" ref="casConfig" />
+		<property name="clients" value="casClient" />
+	</bean> -->
+	
+	<bean name="userFilter" class="com.spring.mybatis.pac4j.UserFilter" />
+
+	<bean name="casCallbackFilter" class="io.buji.pac4j.filter.CallbackFilter">
+		<property name="config" ref="casConfig" />
+		<property name="defaultUrl" value="${shiro.contextPath}" />
+	</bean>
+
+	<bean id="casConfig" class="org.pac4j.core.config.Config">
+		<property name="clients" ref="casClients" />
+	</bean>
+
+	<bean id="casClients" class=" org.pac4j.core.client.Clients">
+		<property name="clients">
+			<list>
+				<ref bean="casClient" />
+				<ref bean="proxyReceptor" />
+			</list>
+		</property>
+		<property name="defaultClient" ref="casClient" />
+	</bean>
+
+	<bean id="casClient" class="org.pac4j.cas.client.CasClient">
+		<property name="configuration" ref="casClientConfiguration" />
+		<property name="callbackUrl" value="${shiro.cas.service}" />
+		<!-- <property name="includeClientNameInCallbackUrl" value="false"></property> -->
+	</bean>
+
+	<bean id="casClientConfiguration" class="org.pac4j.cas.config.CasConfiguration">
+		<constructor-arg name="loginUrl" value="${shiro.loginUrl}?service=${shiro.cas.service}" />
+		<constructor-arg name="prefixUrl" value="${shiro.cas.serverUrlPrefix}" />
+		<property name="protocol" value="CAS20_PROXY" />
+		<property name="acceptAnyProxy" value="true" />
+		<property name="proxyReceptor" ref="proxyReceptor" />
+	</bean>
+	
+	<bean id="proxyReceptor" class="org.pac4j.cas.client.CasProxyReceptor ">
+		<property name="callbackUrl" value="${shiro.cas.proxy.service}" />
 	</bean>
 
 	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
-		<!-- 配置验证错误时的失败页面 -->
-		<property name="redirectUrl" value="${shiro.logoutUrl}" />
+		<property name="redirectUrl" value="${shiro.logoutUrl}?service=${shiro.cas.service}" />
 	</bean>
 
 	<bean id="casRealm" class="com.spring.mybatis.realm.UserRealm">
-		<!-- 认证通过后的默认角色 -->
+		<!-- 认证通过后的默认角色
 		<property name="defaultRoles" value="ROLE_USER" />
-		<!-- cas服务端地址前缀 -->
+		cas服务端地址前缀
 		<property name="casServerUrlPrefix" value="${shiro.cas.serverUrlPrefix}" />
-		<!-- 应用服务地址，用来接收cas服务端票据 -->
-		<property name="casService" value="${shiro.cas.service}" />
+		应用服务地址，用来接收cas服务端票据
+		<property name="casService" value="${shiro.cas.service}" /> -->
 	</bean>
 
 	<!-- Shiro's main business-tier object for web-enabled applications -->
@@ -59,9 +107,9 @@
 		<property name="realm" ref="casRealm" />
 	</bean>
 
-	<bean id="casSubjectFactory" class="org.apache.shiro.cas.CasSubjectFactory"></bean>
+	<!-- <bean id="casSubjectFactory" class="org.apache.shiro.cas.CasSubjectFactory"></bean> -->
 
-
+	<bean id="casSubjectFactory" class="io.buji.pac4j.subject.Pac4jSubjectFactory"></bean>
 
 	<bean
 		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">

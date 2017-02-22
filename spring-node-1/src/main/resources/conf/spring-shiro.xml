@@ -52,6 +52,7 @@
 
 	<bean name="casCallbackFilter" class="io.buji.pac4j.filter.CallbackFilter">
 		<property name="config" ref="casConfig" />
+		<property name="defaultUrl" value="${shiro.contextPath}" />
 	</bean>
 
 	<bean id="casConfig" class="org.pac4j.core.config.Config">
