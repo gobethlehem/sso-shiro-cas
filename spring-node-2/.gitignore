@@ -4,7 +4,7 @@ Desktop.ini
 .project
 .settings/*
 .settings
-/target
+/target/*
 .classpath
 *.log
 .class
