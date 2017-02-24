@@ -23,7 +23,8 @@
 				<!-- <entry key="casFilter" value-ref="casFilter" /> -->
 				<entry key="casCallbackFilter" value-ref="casCallbackFilter" />
 				<entry key="logoutFilter" value-ref="logoutFilter" />
-				<entry key="userFilter" value-ref="userFilter" />
+				<!-- <entry key="userFilter" value-ref="userFilter" /> -->
+				<entry key="securityFilter" value-ref="securityFilter" />
 			</map>
 		</property>
 		<property name="filterChainDefinitions">
@@ -32,7 +33,8 @@
 				/shiro-cas = casCallbackFilter
 				/proxyreceptor = casCallbackFilter
 				/logout = logoutFilter
-				/** = userFilter
+				<!-- /** = userFilter -->
+				/** = securityFilter
 			</value>
 		</property>
 	</bean>
@@ -43,12 +45,12 @@
 		<property name="successUrl" value="${shiro.successUrl}" />
 	</bean> -->
 	
-	<!-- <bean name="casFilter" class="io.buji.pac4j.filter.SecurityFilter">
+	<bean name="securityFilter" class="io.buji.pac4j.filter.SecurityFilter">
 		<property name="config" ref="casConfig" />
 		<property name="clients" value="casClient" />
-	</bean> -->
+	</bean>
 	
-	<bean name="userFilter" class="com.spring.mybatis.pac4j.UserFilter" />
+	<!-- <bean name="userFilter" class="com.spring.mybatis.pac4j.UserFilter" /> -->
 
 	<bean name="casCallbackFilter" class="io.buji.pac4j.filter.CallbackFilter">
 		<property name="config" ref="casConfig" />

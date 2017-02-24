@@ -14,3 +14,4 @@ Desktop.ini
 .idea
 .DS_Store
 .externalToolBuilders
+/target/
