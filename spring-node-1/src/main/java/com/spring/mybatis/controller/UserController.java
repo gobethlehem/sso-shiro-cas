@@ -13,12 +13,18 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.pac4j.cas.client.rest.AbstractCasRestClient;
+import org.pac4j.cas.client.rest.CasRestFormClient;
 import org.pac4j.cas.profile.CasProxyProfile;
+import org.pac4j.cas.profile.CasRestProfile;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.spring.mybatis.model.Response;
 import com.spring.mybatis.service.UserService;
 
 import io.buji.pac4j.subject.Pac4jPrincipal;
@@ -32,12 +38,31 @@ public class UserController {
 	@Resource
 	private UserService userService;
 	
+	@Resource
+	private AbstractCasRestClient casRestClient;
+	
+	
+	/**
+	 * cas rest 登录接口
+	 * @return
+	 */
+	@RequestMapping("/login")
+	public @ResponseBody Response<String> login(){
+		String indexUrl = "http://127.0.0.1:9090/node1/users/loginSuccess";
+        PrincipalCollection principals = SecurityUtils.getSubject().getPrincipals(); 
+        Pac4jPrincipal principal =  principals.byType(Pac4jPrincipal.class).iterator().next(); 
+        CasRestProfile profile = (CasRestProfile)principal.getProfile();
+        TokenCredentials token = casRestClient.requestServiceTicket(indexUrl, profile);
+        String st = token.getToken();
+        return new Response<String>("0",st);
+	}
+	
 	@RequestMapping("/loginSuccess")
 	public String loginSuccess(){
 		
 		logger.info("登录成功");
 		
-		return "../index";
+		return "index";
 	}
 	
 	@RequestMapping("/callbyproxy")

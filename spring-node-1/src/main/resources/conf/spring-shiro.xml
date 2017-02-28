@@ -47,7 +47,7 @@
 	
 	<bean name="securityFilter" class="io.buji.pac4j.filter.SecurityFilter">
 		<property name="config" ref="casConfig" />
-		<property name="clients" value="casClient" />
+		<property name="clients" value="CasClient,CasRestFormClient,DirectCasClient" />
 	</bean>
 	
 	<!-- <bean name="userFilter" class="com.spring.mybatis.pac4j.UserFilter" /> -->
@@ -65,10 +65,19 @@
 		<property name="clients">
 			<list>
 				<ref bean="casClient" />
-				<ref bean="proxyReceptor" />
+				<ref bean="casProxyReceptor" />
+				<ref bean="casRestClient" />
+				<ref bean="directCasClient" />
 			</list>
 		</property>
 		<property name="defaultClient" ref="casClient" />
+	</bean>
+	
+	<bean id="casClientConfiguration" class="org.pac4j.cas.config.CasConfiguration">
+		<constructor-arg name="loginUrl" value="${shiro.loginUrl}?service=${shiro.cas.service}" />
+		<constructor-arg name="prefixUrl" value="${shiro.cas.serverUrlPrefix}" />
+		<property name="protocol" value="CAS20_PROXY" />
+		<property name="proxyReceptor" ref="casProxyReceptor" />
 	</bean>
 
 	<bean id="casClient" class="org.pac4j.cas.client.CasClient">
@@ -76,19 +85,27 @@
 		<property name="callbackUrl" value="${shiro.cas.service}" />
 		<!-- <property name="includeClientNameInCallbackUrl" value="false"></property> -->
 	</bean>
-
-	<bean id="casClientConfiguration" class="org.pac4j.cas.config.CasConfiguration">
-		<constructor-arg name="loginUrl" value="${shiro.loginUrl}?service=${shiro.cas.service}" />
-		<constructor-arg name="prefixUrl" value="${shiro.cas.serverUrlPrefix}" />
-		<property name="protocol" value="CAS20_PROXY" />
-		<property name="proxyReceptor" ref="proxyReceptor" />
-	</bean>
 	
-	<bean id="proxyReceptor" class="org.pac4j.cas.client.CasProxyReceptor ">
+	<bean id="casProxyReceptor" class="org.pac4j.cas.client.CasProxyReceptor">
 		<property name="callbackUrl" value="${shiro.cas.proxy.service}" />
 	</bean>
+	
+	<bean id="casRestClient" class="org.pac4j.cas.client.rest.CasRestFormClient">
+		<constructor-arg name="casServerPrefixUrl" value="${shiro.cas.serverUrlPrefix}" />
+	</bean>
+	
+	<bean id="directCasClientConfiguration" class="org.pac4j.cas.config.CasConfiguration">
+		<constructor-arg name="loginUrl" value="${shiro.loginUrl}?service=${shiro.cas.service}" />
+		<constructor-arg name="prefixUrl" value="${shiro.cas.serverUrlPrefix}" />
+		<property name="protocol" value="CAS20" />
+	</bean>
+	
+	<bean id="directCasClient" class="org.pac4j.cas.client.direct.DirectCasClient" >
+		<constructor-arg name="casConfiguration" ref="directCasClientConfiguration" />
+	</bean>
 
-	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+	<!-- <bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter"> -->
+	<bean id="logoutFilter" class="com.spring.mybatis.pac4j.ShiroLogoutFilter">
 		<property name="redirectUrl" value="${shiro.logoutUrl}?service=${shiro.cas.service}" />
 	</bean>
 
