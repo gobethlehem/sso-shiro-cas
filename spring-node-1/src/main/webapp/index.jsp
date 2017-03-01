@@ -17,8 +17,8 @@
 	
 	<a href="http://127.0.0.1:9090/node1/">节点1</a>
 	
-	<a href="http://127.0.0.1:9090/node1/users/callbyproxy">Proxy访问node2</a>
-	<a href="http://127.0.0.1:9090/node1/users/calldirectly">直接访问node2</a>
+	<a href="http://127.0.0.1:9090/node1/users/postbyproxy">Proxy访问node2 POST请求</a>
+	<a href="http://127.0.0.1:9090/node1/users/getbyproxy">Proxy访问node2 GET请求</a>
 	
 	<a href="http://127.0.0.1:9090/node2/">节点2</a>
 	

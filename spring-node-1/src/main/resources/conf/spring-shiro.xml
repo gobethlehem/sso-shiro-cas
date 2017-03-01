@@ -33,7 +33,6 @@
 				/shiro-cas = casCallbackFilter
 				/proxyreceptor = casCallbackFilter
 				/logout = logoutFilter
-				<!-- /** = userFilter -->
 				/** = securityFilter
 			</value>
 		</property>

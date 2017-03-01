@@ -33,7 +33,6 @@
 				/shiro-cas = casCallbackFilter
 				/proxyreceptor = casCallbackFilter
 				/logout = logoutFilter
-				<!-- /** = userFilter -->
 				/** = securityFilter
 			</value>
 		</property>
@@ -80,6 +79,14 @@
 	
 	<bean id="proxyClient" class="org.pac4j.cas.client.direct.DirectCasClient" >
 		<constructor-arg name="casConfiguration" ref="casClientConfiguration" />
+		<property name="credentialsExtractor" ref="parameterExtractor" />
+	</bean>
+	
+	<bean id="parameterExtractor" class="org.pac4j.core.credentials.extractor.ParameterExtractor">
+		<constructor-arg name="parameterName" value="ticket" />
+		<constructor-arg name="supportGetRequest" value="true" />
+		<constructor-arg name="supportPostRequest" value="true" />
+		<constructor-arg name="clientName" value="DirectCasClient" />
 	</bean>
 	
 	<bean id="casClientConfiguration" class="org.pac4j.cas.config.CasConfiguration">
